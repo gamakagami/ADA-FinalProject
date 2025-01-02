@@ -45,7 +45,7 @@ def permutations(nums):
             perms.append(solution[:]) # Once the solution array reaches the maximum length, the copy of the solution is appended.
             return  
         for num in nums:
-            if not num in solution: # Ensure no number is used twice
+            if num not in solution: # Ensure no number is used twice
                 solution.append(num)
                 backtrack() # Continue appending numbers to the current solution
                 solution.pop() # Remove the last number added
@@ -72,17 +72,21 @@ def bruteforce(distance_matrix, flow_matrix, possible_arrangements):
     optimal_cost = None
     optimal_arrangement = None
     for arrangement in possible_arrangements:
+        print(f"Processing arrangement {arrangement}....")
         total_cost = calculate_cost(arrangement, distance_matrix, flow_matrix) # Calculate the cost for a specific arrangement
+        print(f"Cost of arrangement {arrangement}: {total_cost}")
 
         # Becomes optimal cost if it's null
         if optimal_cost == None:
             optimal_cost = total_cost
             optimal_arrangement = arrangement
+            print(f"Arrangement {optimal_arrangement} becomes most optimal arrangement.")
 
         # Replaces optimal cost if optimal cost is higher than the newly obtained cost.
         elif total_cost < optimal_cost:
             optimal_cost = total_cost
             optimal_arrangement = arrangement
+            print(f"Arrangement {optimal_arrangement} becomes most optimal arrangement.")
     
     print(f"The optimal arrangement is {optimal_arrangement}, with a total cost of {optimal_cost}")
 
@@ -91,34 +95,21 @@ def bruteforce(distance_matrix, flow_matrix, possible_arrangements):
 #distance_matrix = get_matrix(workstations, 1, "distance", "locations")
 #flow_matrix = get_matrix(workstations, 0, "frequency of communication", "workstations")
 
-workstations = 10
+workstations = 3
 
 distance_matrix = [
-    [0, 3, 5, 7, 6, 4, 8, 2, 9, 6],
-    [3, 0, 4, 6, 5, 7, 3, 4, 8, 5],
-    [5, 4, 0, 2, 6, 5, 4, 7, 3, 9],
-    [7, 6, 2, 0, 5, 8, 6, 9, 4, 7],
-    [6, 5, 6, 5, 0, 3, 7, 8, 2, 5],
-    [4, 7, 5, 8, 3, 0, 4, 6, 7, 9],
-    [8, 3, 4, 6, 7, 4, 0, 5, 3, 2],
-    [2, 4, 7, 9, 8, 6, 5, 0, 7, 4],
-    [9, 8, 3, 4, 2, 7, 3, 7, 0, 6],
-    [6, 5, 9, 7, 5, 9, 2, 4, 6, 0],
+    [0, 3, 5],
+    [3, 0, 4],
+    [5, 4, 0],
 ]
 
 flow_matrix = [
-    [0, 2, 1, 3, 0, 2, 4, 1, 3, 2],
-    [2, 0, 3, 2, 4, 1, 2, 3, 1, 4],
-    [1, 3, 0, 4, 2, 3, 1, 2, 3, 1],
-    [3, 2, 4, 0, 1, 3, 2, 4, 2, 3],
-    [0, 4, 2, 1, 0, 3, 4, 2, 3, 1],
-    [2, 1, 3, 3, 3, 0, 2, 1, 4, 2],
-    [4, 2, 1, 2, 4, 2, 0, 3, 2, 4],
-    [1, 3, 2, 4, 2, 1, 3, 0, 2, 3],
-    [3, 1, 3, 2, 3, 4, 2, 2, 0, 1],
-    [2, 4, 1, 3, 1, 2, 4, 3, 1, 0],
+    [0, 2, 1],
+    [2, 0, 3],
+    [1, 3, 0],
 ]
 
 indexes = [i + 1 for i in range(workstations)]
 possible_outcomes = permutations(indexes)
+
 bruteforce(distance_matrix, flow_matrix, possible_outcomes)
