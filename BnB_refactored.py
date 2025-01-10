@@ -1,19 +1,5 @@
 import time, tracemalloc
 
-
-def calculate_cost(arrangement, distance_matrix, flow_matrix):
-    total_cost = 0
-    i_count = 0
-    for i in arrangement:
-        j_count = 0
-        for j in arrangement:
-            if j_count > i_count:
-                total_cost += distance_matrix[i_count][j_count] * flow_matrix[i - 1][j - 1]
-            j_count += 1
-        i_count += 1
-    return total_cost
-
-
 def calculate_partial_cost(last_cost, new_arrangement, distance_matrix, flow_matrix):
     workstation_added = new_arrangement[-1]
     location_added = new_arrangement.index(workstation_added)
