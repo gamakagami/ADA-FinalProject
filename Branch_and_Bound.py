@@ -1,19 +1,5 @@
 import time, tracemalloc
 
-
-def calculate_cost(arrangement, distance_matrix, flow_matrix): # Time: O(n^2) Space: O(1)
-    total_cost = 0 # Time: O(1) Space: O(1)
-    i_count = 0 # Time: O(1) Space: O(1)
-    for i in arrangement: # Time: O(n) Space: O(1)
-        j_count = 0 # Time: O(1) Space: O(1)
-        for j in arrangement: # Time: O(n) Space: O(1)
-            if j_count > i_count: # Time: O(1) Space: O(1)
-                total_cost += distance_matrix[i_count][j_count] * flow_matrix[i - 1][j - 1] # Time: O(1) Space: O(1)
-            j_count += 1 # Time: O(1) Space: O(1)
-        i_count += 1 # Time: O(1) Space: O(1)
-    return total_cost # Time: O(1) Space: O(1)
-
-
 def calculate_partial_cost(last_cost, new_arrangement, distance_matrix, flow_matrix): # Time: O(n) Space: O(1)
     workstation_added = new_arrangement[-1] # Time: O(1) Space: O(1)
     location_added = new_arrangement.index(workstation_added) # Time: O(n) Space: O(1)
@@ -68,6 +54,7 @@ def branch_and_bound(distance_matrix, flow_matrix): # Time: O(n!) Space: O(n!)
 
 distance_matrix = [[0, 7, 9, 8, 10], [7, 0, 6, 2, 2], [9, 6, 0, 8, 7], [8, 2, 8, 0, 6], [10, 2, 7, 6, 0]] # Time: O(1) Space: O(n^2)
 flow_matrix = [[0, 10, 7, 10, 3], [10, 0, 6, 7, 7], [7, 6, 0, 1, 1], [10, 7, 1, 0, 4], [3, 7, 1, 4, 0]] # Time: O(1) Space: O(n^2)
+
 optimal_cost, optimal_solution = branch_and_bound(distance_matrix, flow_matrix) # Time: O(n!) Space: O(n!)
 
 print(f"\nThe optimal arrangement is {optimal_solution}, with a total cost of {optimal_cost}") # Time: O(1) Space: O(1)
