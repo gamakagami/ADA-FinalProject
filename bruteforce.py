@@ -1,61 +1,58 @@
 import time
 import tracemalloc
 
-def calculate_cost(arrangement, distance_matrix, flow_matrix):
-    total_cost = 0
-    i_count = 0
-    # i and j are used to go through all possible pairs of workstations, the arrangement array contains the workstation number (As an index), where the position index is used as the location.
-    for i in arrangement:
-        j_count = 0
-        for j in arrangement:
-            # i_count must be lower than j_count to make sure that only the top half of the matrix is calculated in order to prevent calculating the same pair twice.
-            if i_count < j_count:
-                # The count represents the index of the distance between locations in the distance matrix, while the values in the arrangement array represents the index of the workstations in the flow matrix.
-                total_cost += distance_matrix[i_count][j_count] * flow_matrix[i - 1][j - 1]
-            j_count += 1
-        i_count += 1
-    return total_cost
+def calculate_cost(arrangement, distance_matrix, flow_matrix):  # Time: O(n^2), Space: O(1)
+    total_cost = 0  # Time: O(1), Space: O(1)
+    i_count = 0  # Time: O(1), Space: O(1)
+    for i in arrangement:  # Time: O(n), Space: O(1)
+        j_count = 0  # Time: O(1), Space: O(1)
+        for j in arrangement:  # Time: O(n), Space: O(1)
+            if i_count < j_count:  # Time: O(1), Space: O(1)
+                total_cost += distance_matrix[i_count][j_count] * flow_matrix[i - 1][j - 1]  # Time: O(1), Space: O(1)
+            j_count += 1  # Time: O(1), Space: O(1)
+        i_count += 1  # Time: O(1), Space: O(1)
+    return total_cost  # Time: O(1), Space: O(1)
 
-def bruteforce(distance_matrix, flow_matrix):
-    tracemalloc.start()  # Start tracking memory usage
-    start_time = time.perf_counter()  # Start the timer
+def bruteforce(distance_matrix, flow_matrix):  # Time: O(n!), Space: O(n!)
+    tracemalloc.start()  # Start tracking memory usage # Time: O(1), Space: O(1)
+    start_time = time.perf_counter()  # Start the timer # Time: O(1), Space: O(1)
 
-    optimal_cost = float("inf")
-    optimal_arrangement = None
+    optimal_cost = float("inf")  # Initialize the optimal cost # Time: O(1), Space: O(1)
+    optimal_arrangement = None  # Initialize the optimal arrangement # Time: O(1), Space: O(n)
 
-    def permutations(nums):
-        solution = []
-        def backtrack():
+    def permutations(nums):  # Time: O(n!), Space: O(n!)
+        solution = []  # Time: O(1), Space: O(n)
+        def backtrack():  # Time: O(n!), Space: O(n)
             nonlocal optimal_cost, optimal_arrangement
-            if len(nums) == len(solution):
-                total_cost = calculate_cost(solution, distance_matrix, flow_matrix)
-                # Replaces optimal cost if optimal cost is higher than the newly obtained cost.
-                if total_cost < optimal_cost:
-                    optimal_cost = total_cost
-                    optimal_arrangement = solution[:] # Space complexity is O(n), because the solution list reaches a max size of the number of workstations
-                return
+            if len(nums) == len(solution):  # Time: O(1), Space: O(1)
+                total_cost = calculate_cost(solution, distance_matrix, flow_matrix)  # Time: O(n^2), Space: O(1)
+                if total_cost < optimal_cost:  # Time: O(1), Space: O(1)
+                    optimal_cost = total_cost  # Time: O(1), Space: O(1)
+                    optimal_arrangement = solution[:]  # Time: O(n), Space: O(n)
+                return  # Time: O(1), Space: O(1)
 
-            for num in nums:
-                if num not in solution: # Ensure no number is used twice
-                    solution.append(num)
-                    backtrack() # Continue appending numbers to the current solution
-                    solution.pop() # Remove the last number added
+            for num in nums:  # Time: O(n), Space: O(1)
+                if num not in solution:  # Time: O(n), Space: O(1)
+                    solution.append(num)  # Time: O(1), Space: O(1)
+                    backtrack()  # Recursive call # Time: O(n!), Space: O(n)
+                    solution.pop()  # Backtrack step # Time: O(1), Space: O(1)
         backtrack()
-        return optimal_cost, optimal_arrangement
+        return optimal_cost, optimal_arrangement  # Time: O(1), Space: O(n)
 
-    indexes = [i + 1 for i in range(len(distance_matrix))]
-    optimal_cost, optimal_arrangement = permutations(indexes)
-    print(f"Optimal cost: {optimal_cost}, arrangement: {optimal_arrangement}")
+    indexes = [i + 1 for i in range(len(distance_matrix))]  # Time: O(n), Space: O(n)
+    optimal_cost, optimal_arrangement = permutations(indexes)  # Time: O(n!), Space: O(n!)
 
-    end_time = time.perf_counter()
-    current, peak = tracemalloc.get_traced_memory()
-    tracemalloc.stop()
+    print(f"Optimal cost: {optimal_cost}, arrangement: {optimal_arrangement}")  # Time: O(1), Space: O(1)
 
-    print(f"\nThe optimal arrangement is {optimal_arrangement}, with a total cost of {optimal_cost}")
-    print(f"Elapsed time: {end_time - start_time:.6f} seconds")
-    print(f"Total memory used: {current} bytes")
-    print(f"Peak memory used: {peak} bytes")
+    end_time = time.perf_counter()  # Stop the timer # Time: O(1), Space: O(1)
+    current, peak = tracemalloc.get_traced_memory()  # Get memory usage # Time: O(1), Space: O(1)
+    tracemalloc.stop()  # Stop tracking memory usage # Time: O(1), Space: O(1)
 
-distance_matrix = [[0, 2, 6, 6, 1, 4, 3, 9, 7, 6], [2, 0, 7, 8, 5, 6, 4, 6, 2, 4], [6, 7, 0, 10, 4, 10, 2, 9, 7, 5], [6, 8, 10, 0, 6, 7, 7, 4, 5, 3], [1, 5, 4, 6, 0, 3, 10, 2, 1, 10], [4, 6, 10, 7, 3, 0, 9, 10, 6, 8], [3, 4, 2, 7, 10, 9, 0, 5, 8, 7], [9, 6, 9, 4, 2, 10, 5, 0, 9, 3], [7, 2, 7, 5, 1, 6, 8, 9, 0, 7], [6, 4, 5, 3, 10, 8, 7, 3, 7, 0]]
-flow_matrix = [[0, 3, 3, 6, 5, 6, 9, 1, 9, 3], [3, 0, 6, 10, 2, 2, 10, 1, 3, 9], [3, 6, 0, 8, 8, 6, 8, 1, 8, 4], [6, 10, 8, 0, 6, 8, 7, 5, 3, 4], [5, 2, 8, 6, 0, 8, 9, 10, 9, 7], [6, 2, 6, 8, 8, 0, 5, 10, 10, 9], [9, 10, 8, 7, 9, 5, 0, 5, 8, 4], [1, 1, 1, 5, 10, 10, 5, 0, 7, 1], [9, 3, 8, 3, 9, 10, 8, 7, 0, 2], [3, 9, 4, 4, 7, 9, 4, 1, 2, 0]]
-bruteforce(distance_matrix, flow_matrix)
+    print(f"\nThe optimal arrangement is {optimal_arrangement}, with a total cost of {optimal_cost}")  # Time: O(1), Space: O(1)
+    print(f"Elapsed time: {end_time - start_time:.6f} seconds")  # Time: O(1), Space: O(1)
+    print(f"Total memory used: {current} bytes")  # Time: O(1), Space: O(1)
+    print(f"Peak memory used: {peak} bytes")  # Time: O(1), Space: O(1)
+
+distance_matrix = [[0, 2, 6, 6, 1, 4, 3, 9, 7, 6], [2, 0, 7, 8, 5, 6, 4, 6, 2, 4], [6, 7, 0, 10, 4, 10, 2, 9, 7, 5], [6, 8, 10, 0, 6, 7, 7, 4, 5, 3], [1, 5, 4, 6, 0, 3, 10, 2, 1, 10], [4, 6, 10, 7, 3, 0, 9, 10, 6, 8], [3, 4, 2, 7, 10, 9, 0, 5, 8, 7], [9, 6, 9, 4, 2, 10, 5, 0, 9, 3], [7, 2, 7, 5, 1, 6, 8, 9, 0, 7], [6, 4, 5, 3, 10, 8, 7, 3, 7, 0]]  # Time: O(1), Space: O(n^2)
+flow_matrix = [[0, 3, 3, 6, 5, 6, 9, 1, 9, 3], [3, 0, 6, 10, 2, 2, 10, 1, 3, 9], [3, 6, 0, 8, 8, 6, 8, 1, 8, 4], [6, 10, 8, 0, 6, 8, 7, 5, 3, 4], [5, 2, 8, 6, 0, 8, 9, 10, 9, 7], [6, 2, 6, 8, 8, 0, 5, 10, 10, 9], [9, 10, 8, 7, 9, 5, 0, 5, 8, 4], [1, 1, 1, 5, 10, 10, 5, 0, 7, 1], [9, 3, 8, 3, 9, 10, 8, 7, 0, 2], [3, 9, 4, 4, 7, 9, 4, 1, 2, 0]]  # Time: O(1), Space: O(n^2)
+bruteforce(distance_matrix, flow_matrix)  # Time: O(n!), Space: O(n!)
