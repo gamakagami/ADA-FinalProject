@@ -38,6 +38,7 @@ def bruteforce(distance_matrix, flow_matrix):  # Time: O(n!), Space: O(n!)
                     solution.pop()  # Backtrack step # Time: O(1), Space: O(1)
         backtrack()
         return optimal_cost, optimal_arrangement  # Time: O(1), Space: O(n)
+        
 
     indexes = [i + 1 for i in range(len(distance_matrix))]  # Time: O(n), Space: O(n)
     optimal_cost, optimal_arrangement = permutations(indexes)  # Time: O(n!), Space: O(n!)
